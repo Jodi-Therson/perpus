@@ -13,20 +13,31 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $totalBooks = Book::count();
+        // Currently borrowed books (status = borrowed)
+        $currentLoans = Loan::with('book')
+            ->where('user_id', $user->id)
+            ->where('status', 'borrowed')
+            ->orderBy('borrow_date', 'desc')
+            ->get();
 
-        $activeLoans = Loan::where('user_id', $user->id)
-            ->whereNull('returned_at')
-            ->count();
+        // Recently returned books
+        $recentReturns = Loan::with('book')
+            ->where('user_id', $user->id)
+            ->where('status', 'returned')
+            ->orderBy('returned_at', 'desc')
+            ->limit(5)
+            ->get();
 
-        $returnedLoans = Loan::where('user_id', $user->id)
-            ->whereNotNull('returned_at')
-            ->count();
+        // Count statistics
+        $stats = [
+            'borrowed' => $currentLoans->count(),
+            'returned' => Loan::where('user_id', $user->id)->where('status', 'returned')->count(),
+            'overdue'  => Loan::where('user_id', $user->id)
+                ->where('status', 'borrowed')
+                ->where('due_date', '<', now())
+                ->count(),
+        ];
 
-        return view('dashboard', compact(
-            'totalBooks',
-            'activeLoans',
-            'returnedLoans'
-        ));
+        return view('dashboard', compact('currentLoans', 'recentReturns', 'stats'));
     }
 }

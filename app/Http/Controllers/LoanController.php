@@ -11,12 +11,23 @@ class LoanController extends Controller
 {
     public function index()
     {
-        $loans = Loan::where('user_id', Auth::id())
-            ->with('book')
-            ->orderBy('created_at', 'desc')
+        $user = Auth::user();
+
+        // Active loans
+        $activeLoans = Loan::with('book')
+            ->where('user_id', $user->id)
+            ->where('status', 'borrowed')
+            ->orderBy('borrow_date', 'desc')
+            ->get();
+
+        // Loan history
+        $loanHistory = Loan::with('book')
+            ->where('user_id', $user->id)
+            ->where('status', 'returned')
+            ->orderBy('returned_at', 'desc')
             ->paginate(10);
 
-        return view('loans.index', compact('loans'));
+        return view('loans.index', compact('activeLoans', 'loanHistory'));
     }
 
     public function store(Request $request)
@@ -49,15 +60,16 @@ class LoanController extends Controller
         return redirect()->back()->with('success', 'Book borrowed successfully!');
     }
 
-    public function returnLoan($id)
+    public function returnBook($id)
     {
         $loan = Loan::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->whereNull('returned_at')
+            ->where('user_id', auth()->id())
+            ->where('status', 'borrowed')
             ->firstOrFail();
 
         $loan->update([
             'returned_at' => now(),
+            'status' => 'returned',
         ]);
 
         $loan->book->increment('available_copies');

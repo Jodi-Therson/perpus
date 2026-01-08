@@ -42,6 +42,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loans', [ControllersLoanController::class, 'index'])
         ->name('loans.index');
 
-    Route::post('/loans/{id}/return', [ControllersLoanController::class, 'returnLoan'])
+    Route::post('/loans/{id}/return', [ControllersLoanController::class, 'returnBook'])
         ->name('loans.return');
 });
