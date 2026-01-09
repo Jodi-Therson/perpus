@@ -33,6 +33,7 @@ class BookController extends Controller
             'newest' => $books->latest(),
             'alphabetical' => $books->orderBy('title'),
             'most_borrowed' => $books->withCount('loans')->orderByDesc('loans_count'),
+            'top_rated' => $books->orderByDesc('average_rating'),
             default => $books->latest(),
         };
 
@@ -48,6 +49,13 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        return view('books.show', compact('book'));
+        $book->load(['reviews.user', 'category']);
+        
+        $userReview = null;
+        if (auth()->check()) {
+            $userReview = $book->reviews()->where('user_id', auth()->id())->first();
+        }
+
+        return view('books.show', compact('book', 'userReview'));
     }
 }

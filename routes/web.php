@@ -8,6 +8,7 @@ use App\Models\Controllers\DashboardController;
 use App\Models\Controllers\BookController;
 use App\Models\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,3 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/loans/{id}/return', [ControllersLoanController::class, 'returnBook'])
         ->name('loans.return');
 });
+
+Route::post('/books/{book}/review', [ReviewController::class, 'store'])
+    ->middleware(['auth'])
+    ->name('reviews.store');
