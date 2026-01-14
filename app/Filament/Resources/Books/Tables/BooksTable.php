@@ -5,9 +5,9 @@ namespace App\Filament\Resources\Books\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Table;
 
 class BooksTable
@@ -26,6 +26,7 @@ class BooksTable
             ->filters([])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -10,6 +10,11 @@ class EditLoan extends EditRecord
 {
     protected static string $resource = LoanResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
+
     protected function getHeaderActions(): array
     {
         return [
