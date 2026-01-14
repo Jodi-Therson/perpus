@@ -32,6 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         return match ($user->role) {
             'admin' => redirect()->intended('/admin'),
+            'librarian' => redirect()->intended('/librarian'),
             default => redirect()->intended('/dashboard'),
         };
     }

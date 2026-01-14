@@ -47,4 +47,9 @@ class BookResource extends Resource
             'edit' => EditBook::route('/{record}/edit'),
         ];
     }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->role === 'librarian';
+    }
 }

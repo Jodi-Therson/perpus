@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
         'adminOnly' => \App\Http\Middleware\AdminOnly::class,
+        'librarianOnly' => \App\Http\Middleware\librarianOnly::class,
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
